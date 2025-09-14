@@ -1,0 +1,581 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - Smart Resume{% endblock %}
+
+{% block styles %}
+<style>
+  .edit-profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+
+  .edit-profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: slideInDown 0.6s ease-out;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  }
+
+  .edit-profile-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .edit-profile-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
+
+  .profile-form-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  .avatar-upload-section {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .avatar-upload {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #667eea;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #667eea;
+    margin: 0 auto 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: bounceIn 0.8s ease-out;
+  }
+
+  .avatar-upload:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  }
+
+  .avatar-upload input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-text {
+    color: #667eea;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .form-section {
+    margin-bottom: 2rem;
+  }
+
+  .form-section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    animation: fadeInLeft 0.6s ease-out;
+  }
+
+  .form-section-title i {
+    margin-right: 0.5rem;
+    color: #667eea;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    animation: fadeInRight 0.6s ease-out;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .form-control {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+  }
+
+  .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+  }
+
+  .form-control:hover {
+    border-color: #d1d5db;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .skill-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: bounceIn 0.5s ease-out;
+  }
+
+  .skill-remove {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+  }
+
+  .skill-remove:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .skill-input-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .skill-input {
+    flex: 1;
+  }
+
+  .add-skill-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .add-skill-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    color: white;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-save {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+
+  .btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+  }
+
+  .btn-cancel {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+
+  .btn-cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+    color: white;
+  }
+
+  /* Animations */
+  @keyframes slideInDown {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      transform: translateX(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Animation delays */
+  .form-group:nth-child(1) { animation-delay: 0.1s; }
+  .form-group:nth-child(2) { animation-delay: 0.2s; }
+  .form-group:nth-child(3) { animation-delay: 0.3s; }
+  .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .edit-profile-container {
+      padding: 1rem 0;
+    }
+    
+    .edit-profile-header {
+      padding: 1.5rem;
+    }
+    
+    .edit-profile-title {
+      font-size: 1.5rem;
+    }
+    
+    .profile-form-card {
+      padding: 1.5rem;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .btn-save, .btn-cancel {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container">
+  <!-- Edit Profile Header -->
+  <div class="edit-profile-header">
+    <h1 class="edit-profile-title">Edit Profile</h1>
+    <p class="edit-profile-subtitle">Update your <strong style="color: white;">personal information</strong> and <strong style="color: white;">professional information</strong></p>
+  </div>
+
+  <!-- Profile Form Card -->
+  <div class="profile-form-card">
+    <form id="editProfileForm">
+      <!-- Avatar Upload Section -->
+      <div class="avatar-upload-section">
+        <div class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
+          <i class="fas fa-user"></i>
+          <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)">
+        </div>
+        <p class="upload-text">Click to upload profile picture</p>
+      </div>
+
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="fas fa-user-circle"></i>Personal Information
+        </h3>
+        
+        <div class="form-group">
+          <label for="fullName" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="fullName" value="John Doe" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" value="john.doe@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="phone" value="+1 (555) 123-4567">
+        </div>
+      </div>
+
+      <!-- Professional Information Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="fas fa-briefcase"></i>Professional Information
+        </h3>
+        
+        <div class="form-group">
+          <label for="jobTitle" class="form-label">Job Title</label>
+          <input type="text" class="form-control" id="jobTitle" value="Software Developer">
+        </div>
+        
+        <div class="form-group">
+          <label for="company" class="form-label">Company</label>
+          <input type="text" class="form-control" id="company" value="Tech Corp">
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="fas fa-tools"></i>Skills
+        </h3>
+        
+        <div class="skills-container" id="skillsContainer">
+          <div class="skill-tag">
+            JavaScript
+            <button type="button" class="skill-remove" onclick="removeSkill(this)">×</button>
+          </div>
+          <div class="skill-tag">
+            Python
+            <button type="button" class="skill-remove" onclick="removeSkill(this)">×</button>
+          </div>
+          <div class="skill-tag">
+            React
+            <button type="button" class="skill-remove" onclick="removeSkill(this)">×</button>
+          </div>
+          <div class="skill-tag">
+            Node.js
+            <button type="button" class="skill-remove" onclick="removeSkill(this)">×</button>
+          </div>
+        </div>
+        
+        <div class="skill-input-container">
+          <input type="text" class="form-control skill-input" id="skillInput" placeholder="Add a new skill">
+          <button type="button" class="add-skill-btn" onclick="addSkill()">Add Skill</button>
+        </div>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="fas fa-align-left"></i>Professional Summary
+        </h3>
+        
+        <div class="form-group">
+          <label for="summary" class="form-label">Summary</label>
+          <textarea class="form-control" id="summary" rows="4" placeholder="Tell us about your professional background, experience, and career goals...">Passionate software developer with 5+ years of experience in full-stack development. Specialized in JavaScript, Python, and modern web technologies. Committed to creating efficient, scalable solutions and staying current with industry trends.</textarea>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" onclick="cancelEdit()">
+          <i class="fas fa-times me-2"></i>Cancel
+        </button>
+        <button type="submit" class="btn-save">
+          <i class="fas fa-save me-2"></i>Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Handle avatar upload
+  function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const avatarUpload = document.querySelector('.avatar-upload');
+        avatarUpload.innerHTML = `<img src="${e.target.result}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Add skill functionality
+  function addSkill() {
+    const skillInput = document.getElementById('skillInput');
+    const skillValue = skillInput.value.trim();
+    
+    if (skillValue) {
+      const skillsContainer = document.getElementById('skillsContainer');
+      const skillTag = document.createElement('div');
+      skillTag.className = 'skill-tag';
+      skillTag.innerHTML = `
+        ${skillValue}
+        <button type="button" class="skill-remove" onclick="removeSkill(this)">×</button>
+      `;
+      skillsContainer.appendChild(skillTag);
+      skillInput.value = '';
+    }
+  }
+
+  // Remove skill functionality
+  function removeSkill(button) {
+    button.parentElement.remove();
+  }
+
+  // Handle Enter key in skill input
+  document.getElementById('skillInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addSkill();
+    }
+  });
+
+  // Handle form submission
+  document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Collect form data
+    const formData = {
+      fullName: document.getElementById('fullName').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      jobTitle: document.getElementById('jobTitle').value,
+      company: document.getElementById('company').value,
+      skills: Array.from(document.querySelectorAll('.skill-tag')).map(tag => tag.textContent.replace('×', '').trim()),
+      summary: document.getElementById('summary').value
+    };
+    
+    // In a real application, you would send this data to the backend
+    console.log('Saving profile data:', formData);
+    
+    // Show success message (you can replace this with a proper notification)
+    alert('Profile updated successfully!');
+    
+    // Redirect to view profile page
+    window.location.href = '/view-profile';
+  });
+
+  // Cancel edit functionality
+  function cancelEdit() {
+    if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+      window.location.href = '/view-profile';
+    }
+  }
+
+  // Add animation to skill tags when they are added
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.classList && node.classList.contains('skill-tag')) {
+            node.style.animation = 'bounceIn 0.5s ease-out';
+          }
+        });
+      }
+    });
+  });
+
+  observer.observe(document.getElementById('skillsContainer'), {
+    childList: true
+  });
+</script>
+{% endblock %}

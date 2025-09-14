@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Smart Resume{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </h3>
+                
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                </form>
+                
+                <div class="text-center">
+                    <p class="mb-0">Don't have an account? 
+                        <a href="/register" class="text-primary">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Wait for main.js functions to be available
+document.addEventListener('DOMContentLoaded', function() {
+    
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Show loading state
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging in...';
+        submitBtn.disabled = true;
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+            // First check if the server is reachable
+            const baseUrl = window.location.origin;
+            console.log('Attempting login to:', `${baseUrl}/api/auth/login`);
+            
+            const response = await fetch(`${baseUrl}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password }),
+                // Add timeout and error handling
+                signal: AbortSignal.timeout(10000) // 10 second timeout
+            });
+            
+            console.log('Response status:', response.status);
+            
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error(`Server returned invalid response type: ${contentType}. The server may not be running properly.`);
+            }
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Store tokens in localStorage for API calls
+                localStorage.setItem('access_token', data.access_token);
+                if (data.refresh_token) {
+                    localStorage.setItem('refresh_token', data.refresh_token);
+                }
+                localStorage.setItem('user_data', JSON.stringify(data.user));
+
+                console.log('Login successful, user data:', data.user);
+                
+                // Update navigation UI immediately
+                if (typeof updateAuthUI === 'function') {
+                    updateAuthUI();
+                } else {
+                    console.log('updateAuthUI function not available yet');
+                }
+                
+                // Show success message
+                showAlert(`${data.message || 'Login successful!'} Redirecting...`, 'success');
+
+                // Redirect to dashboard after successful login
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1000);
+            } else {
+                // Show error message
+                showAlert(data.message || 'Login failed', 'danger');
+            }
+        } catch (error) {
+            console.error('Login error details:', error);
+            
+            let errorMessage = 'Network error. Please try again.';
+            
+            if (error.name === 'TimeoutError') {
+                errorMessage = 'Request timed out. Please check if the server is running.';
+            } else if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                errorMessage = 'Cannot connect to server. Please check if the application is running on the correct port.';
+            } else if (error.message.includes('invalid response type')) {
+                errorMessage = error.message;
+            } else if (error.message.includes('JSON')) {
+                errorMessage = 'Server returned invalid response. Please check server logs.';
+            }
+            
+            // Show network error
+            showAlert(`<strong>Connection Error:</strong> ${errorMessage}<br><small class="text-muted">Technical details: ${error.message}</small>`, 'danger');
+        } finally {
+            // Reset button state
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+});
+</script>
+{% endblock %}

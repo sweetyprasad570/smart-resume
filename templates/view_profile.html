@@ -1,0 +1,857 @@
+{% extends "base.html" %}
+
+{% block title %}View Profile - Smart Resume{% endblock %}
+
+{% block styles %}
+<style>
+  /* Professional Green Gradient Background - NO BLUE/PURPLE */
+  .view-profile-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #004d00 0%, #006600 25%, #008800 50%, #00aa00 75%, #00cc44 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 0;
+  }
+
+  /* Subtle background glow effect - GREEN ONLY */
+  .view-profile-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(0, 153, 0, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0, 102, 0, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(0, 204, 68, 0.3) 0%, transparent 50%);
+    animation: glowPulse 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Glassmorphism Profile Card - GREEN THEME */
+  .profile-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(0, 77, 0, 0.7);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    border: 2px solid rgba(0, 255, 102, 0.3);
+    box-shadow: 
+      0 0 40px rgba(0, 255, 102, 0.2),
+      inset 0 0 30px rgba(0, 255, 102, 0.1),
+      0 25px 50px rgba(0, 0, 0, 0.5);
+    padding: 3rem;
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 0.8s ease-out;
+    overflow: hidden;
+  }
+
+  /* Animated green border glow - NO BLUE */
+  .profile-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #00ff66, #00cc44, #00ff66, #008800);
+    border-radius: 25px;
+    z-index: -1;
+    animation: neonGlowRotate 4s linear infinite;
+    opacity: 0.7;
+  }
+
+  /* Profile Header with Green Gradient Strip - WHITE BOLD TEXT */
+  .profile-header {
+    background: linear-gradient(135deg, #004d00 0%, #006600 50%, #00cc44 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: -3rem -3rem 2rem -3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    box-shadow: 
+      0 8px 25px rgba(0, 77, 0, 0.3),
+      inset 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    background: linear-gradient(135deg, #004d00 0%, #00cc44 100%);
+    padding: 3px;
+    position: relative;
+    animation: bounceIn 1s ease-out;
+  }
+
+  .profile-avatar::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #00ff66, #00cc44, #00ff66, #008800);
+    border-radius: 50%;
+    z-index: -1;
+    animation: neonGlow 3s linear infinite;
+  }
+
+  .profile-avatar-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #006600 0%, #008800 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #ffffff;
+  }
+
+  .profile-details h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
+    animation: fadeInLeft 0.8s ease-out;
+  }
+
+  .profile-details .email {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    color: #ffffff;
+    font-weight: 600;
+    animation: fadeInLeft 0.8s ease-out 0.1s both;
+  }
+
+  .profile-details .email i {
+    color: #00ff66;
+  }
+
+  /* Glowing Green Edit Profile Button */
+  .edit-profile-btn {
+    background: linear-gradient(135deg, #00ff66 0%, #00cc44 100%);
+    border: none;
+    color: #004d00;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+      0 0 20px rgba(0, 255, 102, 0.5),
+      0 8px 25px rgba(0, 255, 102, 0.3);
+    animation: fadeInRight 0.8s ease-out, neonPulse 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .edit-profile-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .edit-profile-btn:hover::before {
+    left: 100%;
+  }
+
+  .edit-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 0 30px rgba(0, 255, 102, 0.8),
+      0 12px 35px rgba(0, 255, 102, 0.5);
+  }
+
+  /* Stats Section - Green Mini-Cards - NO BLUE */
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 3rem 0;
+  }
+
+  .stat-card {
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: bounceIn 0.8s ease-out;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 102, 0.3);
+    background: rgba(0, 77, 0, 0.7);
+    backdrop-filter: blur(10px);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00ff66, #00cc44, #00ff66);
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 0 40px rgba(0, 255, 102, 0.6),
+      0 10px 30px rgba(0, 255, 102, 0.3);
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { animation-delay: 0.2s; }
+  .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00ff66 0%, #00cc44 100%);
+    color: #004d00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin: 0 auto 1rem;
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(0, 255, 102, 0.8);
+    animation: countUp 1s ease-out;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-description {
+    font-size: 0.75rem;
+    color: #e8ffe8;
+    line-height: 1.3;
+  }
+
+  /* Section Titles - ENHANCED WITH HIGHLIGHTED BACKGROUND AND LIFTED EFFECT */
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding: 1rem 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: linear-gradient(135deg, rgba(0, 255, 102, 0.3) 0%, rgba(0, 204, 68, 0.4) 50%, rgba(0, 153, 0, 0.3) 100%);
+    border-radius: 15px;
+    border: 1px solid rgba(0, 255, 102, 0.4);
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.8),
+      0 0 15px rgba(0, 255, 102, 0.6),
+      0 0 25px rgba(0, 255, 102, 0.4);
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.4),
+      0 4px 12px rgba(0, 255, 102, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 0.8s ease-out;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+
+  .section-title:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 12px 25px rgba(0, 0, 0, 0.5),
+      0 6px 15px rgba(0, 255, 102, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00ff66, #00cc44, #00ff66);
+    animation: shimmer 2s ease-in-out infinite;
+    box-shadow: 
+      0 0 10px rgba(0, 255, 102, 0.6),
+      0 0 20px rgba(0, 255, 102, 0.4);
+  }
+
+  .section-title i {
+    margin-right: 0.5rem;
+    color: #ffffff;
+    text-shadow: 
+      0 0 10px rgba(0, 255, 102, 0.8),
+      0 0 15px rgba(0, 255, 102, 0.6);
+  }
+
+  /* Transparent Green Glassmorphism Info Cards - rgba(0,77,0,0.7) */
+  .info-card {
+    background: rgba(0, 77, 0, 0.7);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(0, 255, 102, 0.3);
+    box-shadow: 
+      0 0 25px rgba(0, 255, 102, 0.2),
+      inset 0 0 15px rgba(0, 255, 102, 0.1);
+    animation: fadeInUp 0.8s ease-out;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+  }
+
+  .info-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+      0 0 40px rgba(0, 255, 102, 0.4),
+      0 10px 30px rgba(0, 255, 102, 0.2);
+  }
+
+  /* Content Sections Layout */
+  .content-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  /* Skills Section */
+  .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .skill-tag {
+    background: rgba(0, 77, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(0, 255, 102, 0.3);
+    animation: bounceIn 0.6s ease-out;
+    transition: all 0.3s ease;
+  }
+
+  .skill-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+    border-color: rgba(0, 255, 102, 0.6);
+    background: rgba(0, 77, 0, 0.8);
+  }
+
+  /* Personal Information Items */
+  .info-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(54, 15, 152, 0.2);
+    animation: fadeInRight 0.6s ease-out;
+  }
+
+  .info-item:last-child {
+    border-bottom: none;
+  }
+
+  .info-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00ff66 0%, #00cc44 100%);
+    color: #004d00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 0.9rem;
+    box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+  }
+
+  .info-content {
+    flex: 1;
+  }
+
+  .info-label {
+    font-size: 0.85rem;
+    color: #e8ffe8;
+    margin-bottom: 0.2rem;
+  }
+
+  .info-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      transform: translateX(-30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      transform: translateX(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes neonGlow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes neonGlowRotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes neonPulse {
+    0%, 100% {
+      box-shadow: 
+        0 0 20px rgba(0, 255, 102, 0.5),
+        0 8px 25px rgba(0, 255, 102, 0.3);
+    }
+    50% {
+      box-shadow: 
+        0 0 30px rgba(0, 255, 102, 0.8),
+        0 12px 35px rgba(0, 255, 102, 0.5);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes countUp {
+    from {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .view-profile-container {
+      padding: 1rem 0;
+    }
+    
+    .profile-card {
+      padding: 2rem;
+      margin: 1rem;
+    }
+    
+    .profile-header {
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      margin: -2rem -2rem 1.5rem -2rem;
+    }
+    
+    .profile-info {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+    
+    .profile-details h1 {
+      font-size: 1.8rem;
+    }
+    
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .edit-profile-btn {
+      align-self: stretch;
+      text-align: center;
+    }
+    
+    .stats-container {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .content-sections {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .stat-number {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .profile-card {
+      padding: 1.5rem;
+    }
+    
+    .profile-details h1 {
+      font-size: 1.6rem;
+    }
+    
+    .stat-card {
+      padding: 1.2rem;
+    }
+    
+    .stat-number {
+      font-size: 1.6rem;
+    }
+    
+    .info-card {
+      padding: 1.5rem;
+    }
+    
+    .edit-profile-btn {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="view-profile-container">
+  <div class="profile-card">
+    <!-- Profile Header with Green Gradient Strip - WHITE BOLD TEXT -->
+    <div class="profile-header">
+      <div class="profile-info">
+        <div class="profile-avatar">
+          <div class="profile-avatar-inner">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+        <div class="profile-details">
+          <h1>{{ user_data.name if user_data and user_data.name else 'John Doe' }}</h1>
+          <div class="email">
+            <i class="fas fa-envelope"></i>
+            <span>{{ user_data.email if user_data and user_data.email else 'john.doe@example.com' }}</span>
+          </div>
+        </div>
+      </div>
+      <a href="/edit-profile" class="edit-profile-btn">
+        <i class="fas fa-edit"></i> Edit Profile
+      </a>
+    </div>
+
+    <!-- Stats Section - Green Mini-Cards -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-number">95</div>
+        <div class="stat-label">Profile Score</div>
+        <div class="stat-description">Excellent profile completion</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="stat-number">{{ user_data.resume_count if user_data and user_data.resume_count else '3' }}</div>
+        <div class="stat-label">Resumes</div>
+        <div class="stat-description">Professional resumes created</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="stat-number">87</div>
+        <div class="stat-label">Job Matches</div>
+        <div class="stat-description">Potential opportunities found</div>
+      </div>
+    </div>
+
+    <!-- Content Sections with Green Glassmorphism Info Cards -->
+    <div class="content-sections">
+      <!-- Personal Information -->
+      <div class="info-card">
+        <h3 class="section-title">
+          <i class="fas fa-user-circle"></i>
+          Personal Information
+        </h3>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Phone</div>
+            <div class="info-value">+1 (555) 123-4567</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Location</div>
+            <div class="info-value">San Francisco, CA</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Experience</div>
+            <div class="info-value">5+ Years</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Education</div>
+            <div class="info-value">Computer Science</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills & Expertise -->
+      <div class="info-card">
+        <h3 class="section-title">
+          <i class="fas fa-tools"></i>
+          Skills & Expertise
+        </h3>
+        <div class="skills-container">
+          <div class="skill-tag">JavaScript</div>
+          <div class="skill-tag">Python</div>
+          <div class="skill-tag">React</div>
+          <div class="skill-tag">Node.js</div>
+          <div class="skill-tag">MongoDB</div>
+          <div class="skill-tag">Machine Learning</div>
+          <div class="skill-tag">Cloud Computing</div>
+          <div class="skill-tag">DevOps</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional Information -->
+    <div class="info-card">
+      <h3 class="section-title">
+        <i class="fas fa-chart-line"></i>
+        Professional Information
+      </h3>
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="info-content">
+          <div class="info-label">Current Company</div>
+          <div class="info-value">Tech Solutions Inc.</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <div class="info-content">
+          <div class="info-label">Position</div>
+          <div class="info-value">Senior Software Engineer</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="info-content">
+          <div class="info-label">Salary Range</div>
+          <div class="info-value">$120,000 - $150,000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animate stat numbers on page load
+    const statNumbers = document.querySelectorAll('.stat-number');
+    statNumbers.forEach((stat, index) => {
+      const finalValue = parseInt(stat.textContent);
+      let currentValue = 0;
+      const increment = finalValue / 50;
+      
+      const counter = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= finalValue) {
+          currentValue = finalValue;
+          clearInterval(counter);
+        }
+        stat.textContent = Math.floor(currentValue);
+      }, 30);
+    });
+
+    // Add hover effect to skill tags
+    const skillTags = document.querySelectorAll('.skill-tag');
+    skillTags.forEach((tag, index) => {
+      tag.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Add interactive background effect
+    const container = document.querySelector('.view-profile-container');
+    let mouseX = 0;
+    let mouseY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth) * 100;
+      mouseY = (e.clientY / window.innerHeight) * 100;
+      
+      // Subtle parallax effect
+      container.style.backgroundPosition = `${50 + mouseX * 0.1}% ${50 + mouseY * 0.1}%`;
+    });
+
+    // Add shine effect to stat cards periodically
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach((card, index) => {
+      setInterval(() => {
+        card.style.animation = 'none';
+        setTimeout(() => {
+          card.style.animation = '';
+        }, 10);
+      }, 4000 + (index * 1000));
+    });
+
+    // Add hover effect to info cards
+    const infoCards = document.querySelectorAll('.info-card');
+    infoCards.forEach((card, index) => {
+      card.style.animationDelay = `${0.4 + (index * 0.1)}s`;
+    });
+  });
+</script>
+{% endblock %}

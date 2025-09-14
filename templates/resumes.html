@@ -1,0 +1,1455 @@
+{% extends "base.html" %}
+
+{% block title %}My Resumes - Smart Resume{% endblock %}
+
+{% block head %}
+<!-- Enhanced Resume Components CSS -->
+<link href="{{ url_for('static', filename='css/resume-components.css') }}" rel="stylesheet">
+<style>
+/* Modern Responsive Modal Component */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* Fix Bootstrap Modal z-index issues */
+.modal {
+    z-index: 1050 !important;
+}
+
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.modal-dialog {
+    margin: auto !important;
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+}
+
+.modal-content {
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border-radius: 16px 16px 0 0 !important;
+    border-bottom: none !important;
+}
+
+.modal-title {
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+.btn-close {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+    filter: invert(1) !important;
+}
+
+.btn-close:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.1) !important;
+}
+
+.modal-body {
+    background: #fafafa !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+}
+
+.modal-footer {
+    background: white !important;
+    border-radius: 0 0 16px 16px !important;
+    border-top: 1px solid #e5e7eb !important;
+}
+
+/* Ensure modals are always on top */
+body.modal-open {
+    overflow: hidden !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5 !important;
+}
+
+/* Force visibility and proper layering */
+.modal {
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal.fade.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Loading indicator styling */
+.modal .fa-spinner {
+    color: #667eea !important;
+}
+
+/* Button styling consistency */
+.modal .btn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.modal .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+}
+
+.modal .btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+.modal .btn-secondary {
+    background: #f3f4f6 !important;
+    color: #6b7280 !important;
+    border: 1px solid #d1d5db !important;
+}
+
+.modal .btn-secondary:hover {
+    background: #e5e7eb !important;
+    transform: translateY(-1px) !important;
+}
+
+.modal .btn-success {
+    background: #10b981 !important;
+    border: none !important;
+}
+
+.modal .btn-info {
+    background: #06b6d4 !important;
+    border: none !important;
+}
+
+/* Enhanced Resume Content Styling */
+.resume-section {
+    margin-bottom: 24px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.resume-section:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.resume-section h6 {
+    color: #667eea !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-size: 1.1rem !important;
+}
+
+.resume-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.resume-info-item {
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.resume-info-item:last-child {
+    border-bottom: none;
+}
+
+.resume-info-item strong {
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resume-info-value {
+    color: #6b7280;
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+/* Fix for long URLs (especially LinkedIn) to prevent overflow */
+.resume-info-value a {
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    word-break: break-all;
+    hyphens: auto;
+    max-width: 100%;
+    display: inline-block;
+    text-decoration: none;
+    color: #667eea;
+    line-height: 1.4;
+}
+
+.resume-info-value a:hover {
+    text-decoration: underline;
+    color: #5a6fd8;
+}
+
+.resume-description {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 18px;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+    margin-top: 12px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    font-size: 0.95rem;
+    color: #374151;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.resume-skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.resume-skill-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+    transition: all 0.2s ease;
+}
+
+.resume-skill-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.resume-meta-info {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 16px;
+}
+
+.resume-meta-info strong {
+    color: #475569;
+}
+
+/* Smooth scrolling for modal content */
+.modal-body {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+@media (max-width: 768px) {
+    .resume-info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .resume-section {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .resume-skills-container {
+        gap: 6px;
+    }
+    
+    .resume-skill-tag {
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-container {
+    background: white;
+    width: 100%;
+    max-width: 700px;
+    height: 80vh;
+    border-radius: 16px;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.show .modal-container {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    padding: 24px 24px 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: #fafafa;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+.modal-footer {
+    padding: 20px 24px;
+    border-top: 1px solid #e5e7eb;
+    background: white;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Form Styling Inside Modal */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+    margin: 32px 0;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: #667eea;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Button Styles */
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-container {
+        width: 95vw;
+        height: 85vh;
+        margin: 0;
+    }
+    
+    .modal-header {
+        padding: 20px 20px 16px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .modal-footer {
+        padding: 16px 20px;
+        flex-direction: column-reverse;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .modal-title {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 10px;
+    }
+    
+    .modal-container {
+        width: 100vw;
+        height: 90vh;
+        border-radius: 12px;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+    from {
+        transform: scale(0.9) translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row" id="resumes-container">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+            <p class="mt-3">Loading your resumes...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modern Responsive Modal -->
+<div class="modal-overlay" id="createResumeModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">
+                📄 Create New Resume
+            </h2>
+            <button type="button" class="modal-close" id="closeModal">
+                ✕
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <form id="createResumeForm">
+                <!-- Personal Information Section -->
+                <div class="section-header">
+                    👤 Personal Information
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name *</label>
+                        <input type="text" class="form-input" id="fullName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" class="form-input" id="email" placeholder="john.doe@email.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number</label>
+                        <input type="tel" class="form-input" id="phone" placeholder="+1 (555) 123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="linkedin">LinkedIn Profile</label>
+                        <input type="url" class="form-input" id="linkedin" placeholder="https://linkedin.com/in/username">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="address">Address</label>
+                    <input type="text" class="form-input" id="address" placeholder="City, State, Country">
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Professional Summary Section -->
+                <div class="section-header">
+                    📝 Professional Summary
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="summary">Professional Summary</label>
+                    <textarea class="form-textarea" id="summary" placeholder="Write a compelling summary of your professional experience and key achievements..."></textarea>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Education Section -->
+                <div class="section-header">
+                    🎓 Education
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="education">Education Background</label>
+                    <textarea class="form-textarea" id="education" placeholder="Your educational background, degrees, certifications..."></textarea>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Experience Section -->
+                <div class="section-header">
+                    💼 Work Experience
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="experience">Professional Experience</label>
+                    <textarea class="form-textarea" id="experience" placeholder="Your work experience, job responsibilities, achievements..."></textarea>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Projects Section -->
+                <div class="section-header">
+                    💡 Projects
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="projects">Notable Projects</label>
+                    <textarea class="form-textarea" id="projects" placeholder="Your projects, technologies used, outcomes achieved..."></textarea>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Skills Section -->
+                <div class="section-header">
+                    🛠️ Skills
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="skills">Technical & Soft Skills</label>
+                    <input type="text" class="form-input" id="skills" placeholder="Python, JavaScript, React, Project Management, etc.">
+                    <small style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">Separate skills with commas</small>
+                </div>
+            </form>
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelModal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveResumeBtn">
+                ✨ Save Resume
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modern View Resume Modal -->
+<div class="modal-overlay" id="viewResumeModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                👁️ Resume Details
+            </h2>
+            <button type="button" class="modal-close" id="closeViewModal">
+                ✕
+            </button>
+        </div>
+        
+        <div class="modal-body" id="viewResumeContent">
+            <!-- Loading State -->
+            <div class="text-center py-5" id="viewResumeLoading">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color: #667eea;"></i>
+                <p class="mt-3" style="color: #6b7280;">Loading resume details...</p>
+            </div>
+            
+            <!-- Content will be dynamically loaded here -->
+            <div id="viewResumeData" style="display: none;"></div>
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="closeViewModalBtn">
+                <i class="fas fa-times me-2"></i>Close
+            </button>
+            <button type="button" class="btn btn-success" id="downloadResumeBtn">
+                <i class="fas fa-download me-2"></i>Download PDF
+            </button>
+            <button type="button" class="btn btn-info" id="printResumeBtn">
+                <i class="fas fa-print me-2"></i>Print
+            </button>
+            <button type="button" class="btn btn-primary" id="editResumeBtn">
+                <i class="fas fa-edit me-2"></i>Edit Resume
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Edit Modal Removed - Now using unified custom modal for both create and edit -->
+{% endblock %}
+
+{% block scripts %}
+<!-- Common JavaScript utilities -->
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+<!-- Enhanced Resume Components JavaScript -->
+<script src="{{ url_for('static', filename='js/resume-components.js') }}"></script>
+<script>
+async function loadResumes() {
+    try {
+        const container = document.getElementById('resumes-container');
+        
+        // Show loading state
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                    <p class="mt-3">Loading your resumes...</p>
+                </div>
+            </div>
+        `;
+        
+        // Fetch user's resumes list
+        const data = await apiRequest('/api/resumes');
+        
+        // If API returned no data (e.g., unauthorized case handled upstream), throw to trigger error UI
+        if (!data) {
+            throw new Error('Failed to load resumes. Please try again.');
+        }
+        
+        if (!data.resumes || data.resumes.length === 0) {
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                        <p class="mb-0">No resumes found. Click 'Create New Resume' to get started.</p>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        // Display resumes in card layout
+        let html = '';
+        data.resumes.forEach(resume => {
+            const createdDate = new Date(resume.created_at).toLocaleDateString();
+            const primarySkills = resume.skills ? resume.skills.split(',').slice(0, 3).map(skill => skill.trim()).join(', ') : 'No skills listed';
+            
+            html += `
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm hover-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-file-alt me-2 text-primary"></i>
+                                    ${resume.full_name || 'Professional Resume'}
+                                </h5>
+                                <span class="badge bg-success">Active</span>
+                            </div>
+                            
+                            <p class="card-text text-muted small mb-2">
+                                <i class="fas fa-calendar me-1"></i>Created: ${createdDate}
+                            </p>
+                            
+                            <p class="card-text mb-3">
+                                <strong>Skills:</strong> ${primarySkills}
+                            </p>
+                            
+                            ${resume.summary ? `
+                                <p class="card-text text-muted small">
+                                    <em>${resume.summary.substring(0, 100)}${resume.summary.length > 100 ? '...' : ''}</em>
+                                </p>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="card-footer bg-transparent">
+                            <div class="btn-group w-100" role="group">
+                                <button class="btn btn-outline-primary btn-sm" onclick="viewResume('${resume.id}')" title="View Resume">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="editResume('${resume.id}')" title="Edit Resume">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </button>
+                                <button class="btn btn-outline-success btn-sm" onclick="downloadResumePDF('${resume.id}')" title="Download PDF">
+                                    <i class="fas fa-download me-1"></i>PDF
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = `
+            <div class="col-12 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-folder-open me-2 text-primary"></i>
+                        My Resumes (${data.resumes.length})
+                    </h3>
+                    <button class="btn btn-primary" onclick="openModal()">
+                        <i class="fas fa-plus me-2"></i>Create New Resume
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                ${html}
+            </div>
+        `;
+        
+    } catch (error) {
+        console.error('Error loading resumes:', error);
+        const container = document.getElementById('resumes-container');
+        
+        // Handle authentication errors
+        if (error.message && error.message.includes('401')) {
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-warning text-center py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h5>Authentication Required</h5>
+                        <p class="mb-3">Please log in to view your resumes.</p>
+                        <a href="/login" class="btn btn-primary me-2">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </a>
+                        <a href="/register" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Register
+                        </a>
+                    </div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger text-center py-5">
+                        <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                        <h5>Error Loading Resumes</h5>
+                        <p class="mb-3">Failed to load resumes. Please try again.</p>
+                        <button class="btn btn-outline-danger me-2" onclick="loadResumes()">
+                            <i class="fas fa-redo me-2"></i>Try Again
+                        </button>
+                        <button class="btn btn-primary" onclick="openModal()">
+                            <i class="fas fa-plus me-2"></i>Create Resume
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+
+// Save resume (create or edit mode)
+document.getElementById('saveResumeBtn').addEventListener('click', async function(event) {
+    event.preventDefault();
+    
+    const button = this;
+    const originalText = button.innerHTML;
+    
+    try {
+        // Get form data
+        const resumeData = {
+            full_name: document.getElementById('fullName')?.value.trim() || '',
+            email: document.getElementById('email')?.value.trim() || '',
+            phone: document.getElementById('phone')?.value.trim() || '',
+            linkedin: document.getElementById('linkedin')?.value.trim() || '',
+            address: document.getElementById('address')?.value.trim() || '',
+            summary: document.getElementById('summary')?.value.trim() || '',
+            education: document.getElementById('education')?.value.trim() || '',
+            experience: document.getElementById('experience')?.value.trim() || '',
+            projects: document.getElementById('projects')?.value.trim() || '',
+            skills: document.getElementById('skills')?.value.trim() || ''
+        };
+        
+        // Basic validation
+        if (!resumeData.full_name || !resumeData.email) {
+            showAlert('Please enter your full name and email address.', 'warning');
+            return;
+        }
+        
+        // Show loading state
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>' + (isEditMode ? 'Updating...' : 'Saving...');
+        
+        // Determine API endpoint and method
+        const url = isEditMode ? `/api/resumes/${currentResumeId}` : '/api/resumes';
+        const method = isEditMode ? 'PUT' : 'POST';
+        
+        // Make API request using the centralized apiRequest function
+        const result = await apiRequest(url, {
+            method: method,
+            body: JSON.stringify(resumeData)
+        });
+        
+        // Show success message
+        showAlert(isEditMode ? '✅ Resume updated successfully!' : '✅ Resume created successfully!', 'success');
+        
+        // Close modal
+        closeModal();
+        
+        // Reload resumes
+        loadResumes();
+        
+        console.log(isEditMode ? 'Resume updated:' : 'Resume created:', result);
+        
+    } catch (error) {
+        console.error('Save Resume Error:', error);
+        showAlert(`❌ Failed to ${isEditMode ? 'update' : 'save'} resume: ` + error.message, 'danger');
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        button.innerHTML = originalText;
+    }
+});
+
+let isEditMode = false; // Track whether modal is in create or edit mode
+
+// Show alert function for user notifications
+function showAlert(message, type = 'info') {
+    const alertContainer = document.getElementById('alert-container') || document.body;
+    const alertId = 'alert-' + Date.now();
+    
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" id="${alertId}" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            <i class="fas fa-${getAlertIcon(type)} me-2"></i>${message}
+            <button type="button" class="btn-close" onclick="closeAlert('${alertId}')"></button>
+        </div>
+    `;
+    
+    alertContainer.insertAdjacentHTML('beforeend', alertHtml);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        closeAlert(alertId);
+    }, 5000);
+}
+
+// Get appropriate icon for alert type
+function getAlertIcon(type) {
+    const icons = {
+        'success': 'check-circle',
+        'danger': 'exclamation-triangle',
+        'warning': 'exclamation-circle',
+        'info': 'info-circle'
+    };
+    return icons[type] || 'info-circle';
+}
+
+// Close alert
+function closeAlert(alertId) {
+    const alert = document.getElementById(alertId);
+    if (alert) {
+        alert.classList.remove('show');
+        setTimeout(() => {
+            alert.remove();
+        }, 150);
+    }
+}
+
+// Enhanced View resume function for modern modal
+async function viewResume(id) {
+    try {
+        console.log('=== VIEW RESUME DEBUG ===');
+        console.log('Resume ID:', id);
+        currentResumeId = id;
+        
+        // Show modal and loading state
+        openViewModal();
+        showViewLoading(true);
+        
+        // Fetch resume data
+        console.log('Fetching resume data from API...');
+        const data = await apiRequest(`/api/resumes/${id}`);
+        console.log('API Response:', data);
+        const resume = data.resume;
+        console.log('Resume data:', resume);
+        
+        // Hide loading and show content
+        showViewLoading(false);
+        displayResumeContent(resume);
+        console.log('=== VIEW RESUME DEBUG END ===');
+        
+    } catch (error) {
+        console.error('=== VIEW RESUME ERROR ===');
+        console.error('Error:', error);
+        showViewLoading(false);
+        showAlert('Failed to load resume: ' + error.message, 'danger');
+        closeViewModal();
+    }
+}
+
+// Display resume content with enhanced styling
+function displayResumeContent(resume) {
+    const contentContainer = document.getElementById('viewResumeData');
+    
+    // Format skills as tags
+    const formatSkills = (skillsString) => {
+        if (!skillsString) return '';
+        const skills = skillsString.split(',').map(s => s.trim()).filter(s => s);
+        return skills.map(skill => `<span class="resume-skill-tag">${skill}</span>`).join('');
+    };
+    
+    contentContainer.innerHTML = `
+        <!-- Personal Information Section -->
+        <div class="resume-section">
+            <h6><i class="fas fa-user"></i> Personal Information</h6>
+            <div class="resume-info-grid">
+                <div>
+                    <div class="resume-info-item">
+                        <strong>Full Name</strong>
+                        <div class="resume-info-value">${resume.full_name || 'Not provided'}</div>
+                    </div>
+                    <div class="resume-info-item">
+                        <strong>Email</strong>
+                        <div class="resume-info-value">${resume.email || 'Not provided'}</div>
+                    </div>
+                    <div class="resume-info-item">
+                        <strong>Phone</strong>
+                        <div class="resume-info-value">${resume.phone || 'Not provided'}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="resume-info-item">
+                        <strong>Address</strong>
+                        <div class="resume-info-value">${resume.address || 'Not provided'}</div>
+                    </div>
+                    <div class="resume-info-item">
+                        <strong>LinkedIn</strong>
+                        <div class="resume-info-value">${resume.linkedin ? `<a href="${resume.linkedin}" target="_blank" style="color: #667eea; text-decoration: none;">${resume.linkedin}</a>` : 'Not provided'}</div>
+                    </div>
+                </div>
+            </div>
+            ${resume.summary ? `<div class="resume-description">${resume.summary}</div>` : ''}
+        </div>
+        
+        <!-- Education Section -->
+        ${resume.education ? `
+        <div class="resume-section">
+            <h6><i class="fas fa-graduation-cap"></i> Education</h6>
+            <div class="resume-description">${resume.education}</div>
+        </div>
+        ` : ''}
+        
+        <!-- Experience Section -->
+        ${resume.experience ? `
+        <div class="resume-section">
+            <h6><i class="fas fa-briefcase"></i> Work Experience</h6>
+            <div class="resume-description">${resume.experience}</div>
+        </div>
+        ` : ''}
+        
+        <!-- Projects Section -->
+        ${resume.projects ? `
+        <div class="resume-section">
+            <h6><i class="fas fa-code"></i> Projects</h6>
+            <div class="resume-description">${resume.projects}</div>
+        </div>
+        ` : ''}
+        
+        <!-- Skills Section -->
+        ${resume.skills ? `
+        <div class="resume-section">
+            <h6><i class="fas fa-tools"></i> Skills</h6>
+            <div class="resume-skills-container">
+                ${formatSkills(resume.skills)}
+            </div>
+        </div>
+        ` : ''}
+        
+        <!-- Metadata -->
+        <div class="resume-meta-info">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    <strong>Created:</strong> ${new Date(resume.created_at).toLocaleDateString()}
+                </div>
+                <div>
+                    <i class="fas fa-edit me-1"></i>
+                    <strong>Updated:</strong> ${new Date(resume.updated_at).toLocaleDateString()}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    contentContainer.style.display = 'block';
+}
+
+// View Modal Management Functions
+function openViewModal() {
+    const modal = document.getElementById('viewResumeModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeViewModal() {
+    const modal = document.getElementById('viewResumeModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+    
+    // Reset content (but don't clear currentResumeId immediately to allow edit functionality)
+    setTimeout(() => {
+        document.getElementById('viewResumeData').style.display = 'none';
+        document.getElementById('viewResumeData').innerHTML = '';
+        // Only clear currentResumeId if we're not about to edit
+        // This will be managed by the edit modal functions instead
+    }, 300);
+}
+
+function showViewLoading(show) {
+    const loading = document.getElementById('viewResumeLoading');
+    const content = document.getElementById('viewResumeData');
+    
+    if (show) {
+        loading.style.display = 'block';
+        content.style.display = 'none';
+    } else {
+        loading.style.display = 'none';
+    }
+}
+
+// Download Resume as PDF
+function downloadResumePDF(resumeId) {
+    if (!resumeId) {
+        showAlert('No resume selected for download', 'warning');
+        return;
+    }
+    
+    try {
+        // Open PDF download in new tab
+        window.open(`/api/resumes/${resumeId}/download`, '_blank');
+        showAlert('Preparing PDF download...', 'info');
+    } catch (error) {
+        console.error('Download error:', error);
+        showAlert('Failed to download resume: ' + error.message, 'danger');
+    }
+}
+
+// Print Resume
+function printResume(resumeId) {
+    if (!resumeId) {
+        showAlert('No resume selected for printing', 'warning');
+        return;
+    }
+    
+    try {
+        console.log('🖨️ Opening print view for resume:', resumeId);
+        
+        // Open HTML print view in new tab - this will auto-trigger print dialog
+        const printWindow = window.open(`/api/resumes/${resumeId}/print`, '_blank');
+        
+        if (printWindow) {
+            showAlert('🖨️ Opening print dialog...', 'info');
+            
+            // The print dialog will be triggered automatically by the HTML page
+            // No need to manually call printWindow.print() as it's handled by the server response
+        } else {
+            throw new Error('Print window blocked by popup blocker. Please allow popups for this site.');
+        }
+    } catch (error) {
+        console.error('❌ Print error:', error);
+        showAlert('❌ Failed to open print dialog: ' + error.message, 'danger');
+    }
+}
+
+// Edit Resume - Load data into unified custom modal
+async function editResume(resumeId) {
+    // Enhanced validation
+    if (!resumeId || resumeId === 'undefined' || resumeId === 'null') {
+        showAlert('⚠️ No resume selected for editing', 'warning');
+        console.error('editResume called with invalid ID:', resumeId);
+        return;
+    }
+    
+    try {
+        console.log('🚀 Starting edit process for resume ID:', resumeId);
+        
+        // Set current resume ID for the edit operation
+        currentResumeId = resumeId;
+        
+        // Show loading feedback
+        showAlert('🔄 Loading resume data for editing...', 'info');
+        
+        // Fetch resume data with better error handling
+        const data = await apiRequest(`/api/resumes/${resumeId}`);
+        
+        if (!data || !data.resume) {
+            throw new Error('Invalid response: Resume data not found');
+        }
+        
+        const resume = data.resume;
+        
+        // Validate resume has required data
+        if (!resume.id || resume.id !== resumeId) {
+            throw new Error('Resume ID mismatch - data integrity issue');
+        }
+        
+        // Open modal in edit mode with data
+        openEditModal(resume);
+        
+        console.log('✅ Edit modal successfully opened for resume:', resumeId);
+        console.log('Resume data loaded:', {
+            id: resume.id,
+            name: resume.full_name,
+            email: resume.email,
+            hasEducation: !!resume.education,
+            hasExperience: !!resume.experience,
+            hasSkills: !!resume.skills
+        });
+        
+    } catch (error) {
+        console.error('❌ Edit resume error for ID', resumeId, ':', error);
+        
+        // Show user-friendly error message based on error type
+        if (error.message.includes('404') || error.message.includes('not found')) {
+            showAlert('❌ Resume not found. It may have been deleted.', 'danger');
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+            showAlert('❌ Network error. Please check your connection and try again.', 'danger');
+        } else {
+            showAlert(`❌ Failed to load resume for editing: ${error.message}`, 'danger');
+        }
+        
+        // Reset state on error
+        currentResumeId = null;
+        isEditMode = false;
+    }
+}
+
+// Old update and delete functions removed - now handled by unified modal system
+
+// Modal Management Functions
+// Open modal for create mode
+function openModal() {
+    isEditMode = false;
+    currentResumeId = null;
+    
+    // Update modal title and button
+    document.getElementById('modalTitle').innerHTML = '📄 Create New Resume';
+    document.getElementById('saveResumeBtn').innerHTML = '✨ Save Resume';
+    
+    // Reset form
+    document.getElementById('createResumeForm').reset();
+    
+    // Show modal
+    const modal = document.getElementById('createResumeModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+// Open modal for edit mode
+function openEditModal(resumeData) {
+    // Ensure we're in edit mode
+    isEditMode = true;
+    
+    // Make sure currentResumeId is set from the resume data
+    if (resumeData && resumeData.id) {
+        currentResumeId = resumeData.id;
+        console.log('📝 Setting currentResumeId to:', currentResumeId);
+    }
+    
+    // Update modal title and button
+    document.getElementById('modalTitle').innerHTML = '✏️ Edit Resume';
+    document.getElementById('saveResumeBtn').innerHTML = '✨ Update Resume';
+    
+    // Pre-fill form with existing data
+    console.log('=== EDIT MODAL DEBUG ===');
+    console.log('Resume data to populate:', resumeData);
+    
+    try {
+        // Populate each field with detailed logging
+        console.log('Populating fullName:', resumeData.full_name);
+        document.getElementById('fullName').value = resumeData.full_name || '';
+        
+        console.log('Populating email:', resumeData.email);
+        document.getElementById('email').value = resumeData.email || '';
+        
+        console.log('Populating phone:', resumeData.phone);
+        document.getElementById('phone').value = resumeData.phone || '';
+        
+        console.log('Populating linkedin:', resumeData.linkedin);
+        document.getElementById('linkedin').value = resumeData.linkedin || '';
+        
+        console.log('Populating address:', resumeData.address);
+        document.getElementById('address').value = resumeData.address || '';
+        
+        console.log('Populating summary:', resumeData.summary);
+        document.getElementById('summary').value = resumeData.summary || '';
+        
+        console.log('Populating education:', resumeData.education);
+        document.getElementById('education').value = resumeData.education || '';
+        
+        console.log('Populating experience:', resumeData.experience);
+        document.getElementById('experience').value = resumeData.experience || '';
+        
+        console.log('Populating projects:', resumeData.projects);
+        document.getElementById('projects').value = resumeData.projects || '';
+        
+        console.log('Populating skills:', resumeData.skills);
+        document.getElementById('skills').value = resumeData.skills || '';
+        
+        console.log('✅ Form fields populated successfully');
+        console.log('=== EDIT MODAL DEBUG END ===');
+    } catch (error) {
+        console.error('❌ Error populating form fields:', error);
+        showAlert('⚠️ Some form fields may not be populated correctly', 'warning');
+    }
+    
+    // Show modal
+    const modal = document.getElementById('createResumeModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    console.log('✅ Edit modal opened successfully');
+}
+
+// Close modal (works for both create and edit)
+function closeModal() {
+    const modal = document.getElementById('createResumeModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+    
+    // Reset state
+    isEditMode = false;
+    currentResumeId = null;
+    
+    // Reset form after animation
+    setTimeout(() => {
+        document.getElementById('createResumeForm').reset();
+        document.getElementById('modalTitle').innerHTML = '📄 Create New Resume';
+        document.getElementById('saveResumeBtn').innerHTML = '✨ Save Resume';
+    }, 300);
+}
+
+// Load resumes when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadResumes();
+    
+    // Event listeners for Create Resume modal
+    document.getElementById('openCreateModal').addEventListener('click', openModal);
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    document.getElementById('cancelModal').addEventListener('click', closeModal);
+    
+    // Event listeners for View Resume modal
+    document.getElementById('closeViewModal').addEventListener('click', closeViewModal);
+    document.getElementById('closeViewModalBtn').addEventListener('click', closeViewModal);
+    
+    // Modal action buttons
+    document.getElementById('downloadResumeBtn').addEventListener('click', function() {
+        if (currentResumeId) {
+            downloadResumePDF(currentResumeId);
+        }
+    });
+    
+    document.getElementById('printResumeBtn').addEventListener('click', function() {
+        if (currentResumeId) {
+            printResume(currentResumeId);
+        }
+    });
+    
+    document.getElementById('editResumeBtn').addEventListener('click', function() {
+        if (currentResumeId) {
+            // Capture the current resume ID before closing view modal
+            const resumeIdToEdit = currentResumeId;
+            closeViewModal();
+            // Use captured ID instead of global variable to avoid race condition
+            setTimeout(() => editResume(resumeIdToEdit), 300);
+        } else {
+            showAlert('No resume selected for editing', 'warning');
+            console.error('Edit button clicked but currentResumeId is null');
+        }
+    });
+    
+    // Close Create Resume modal when clicking outside
+    document.getElementById('createResumeModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+    
+    // Close View Resume modal when clicking outside
+    document.getElementById('viewResumeModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeViewModal();
+        }
+    });
+    
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const createModal = document.getElementById('createResumeModal');
+            const viewModal = document.getElementById('viewResumeModal');
+            
+            if (createModal.classList.contains('show')) {
+                closeModal();
+            } else if (viewModal.classList.contains('show')) {
+                closeViewModal();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

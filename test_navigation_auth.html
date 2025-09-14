@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Auth Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Navigation Authentication Test</h2>
+        
+        <!-- Test Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container-fluid">
+                <span class="navbar-brand">Smart Resume</span>
+                <div class="navbar-nav">
+                    <li class="nav-item guest-only">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item auth-required">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item auth-required">
+                        <span class="nav-link">Welcome, <span class="user-name">User</span></span>
+                    </li>
+                    <li class="nav-item auth-required">
+                        <button class="btn btn-outline-primary btn-sm" id="logoutBtn">Logout</button>
+                    </li>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Test Controls -->
+        <div class="card">
+            <div class="card-body">
+                <h5>Authentication State Test</h5>
+                <p>Current status: <span id="authStatus">Unknown</span></p>
+                <p>Token exists: <span id="tokenStatus">Unknown</span></p>
+                
+                <div class="btn-group" role="group">
+                    <button class="btn btn-success" id="simulateLogin">Simulate Login</button>
+                    <button class="btn btn-danger" id="simulateLogout">Simulate Logout</button>
+                    <button class="btn btn-info" id="updateUI">Update UI</button>
+                </div>
+                
+                <div class="mt-3">
+                    <h6>Test User Data:</h6>
+                    <input type="text" id="testUserName" class="form-control" placeholder="Test User Name" value="John Doe">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateStatus() {
+                document.getElementById('authStatus').textContent = isAuthenticated() ? 'Authenticated' : 'Not Authenticated';
+                document.getElementById('tokenStatus').textContent = getToken() ? 'Yes' : 'No';
+            }
+            
+            // Simulate login
+            document.getElementById('simulateLogin').addEventListener('click', function() {
+                const userName = document.getElementById('testUserName').value || 'Test User';
+                setToken('fake-token-12345');
+                localStorage.setItem('user_data', JSON.stringify({
+                    name: userName,
+                    email: 'test@example.com'
+                }));
+                updateAuthUI();
+                updateStatus();
+                console.log('Simulated login for:', userName);
+            });
+            
+            // Simulate logout
+            document.getElementById('simulateLogout').addEventListener('click', function() {
+                removeToken();
+                localStorage.removeItem('user_data');
+                updateAuthUI();
+                updateStatus();
+                console.log('Simulated logout');
+            });
+            
+            // Manual UI update
+            document.getElementById('updateUI').addEventListener('click', function() {
+                updateAuthUI();
+                updateStatus();
+                console.log('UI updated manually');
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                document.getElementById('simulateLogout').click();
+            });
+            
+            // Initial status update
+            updateStatus();
+            updateAuthUI();
+        });
+    </script>
+</body>
+</html>

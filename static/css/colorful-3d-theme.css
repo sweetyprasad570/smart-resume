@@ -1,0 +1,631 @@
+/* Colorful 3D Theme for Smart Resume - Multi-color sections with 3D effects */
+
+:root {
+    /* Enhanced Color Palette */
+    --gradient-blue: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-navy: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%);
+    --gradient-green: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-orange: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    --gradient-pink: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+    --gradient-cyan: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    --gradient-royal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-sunset: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    --gradient-ocean: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    --gradient-forest: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+    
+    /* 3D Shadow Effects */
+    --shadow-3d-light: 0 4px 8px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+    --shadow-3d-medium: 0 8px 16px rgba(0,0,0,0.15), 0 16px 32px rgba(0,0,0,0.15);
+    --shadow-3d-heavy: 0 12px 24px rgba(0,0,0,0.2), 0 24px 48px rgba(0,0,0,0.2);
+    --shadow-3d-glow: 0 0 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Body with gradient background */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #4b62a2 50%, #939afb 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Enhanced Navbar with 3D effect */
+.navbar {
+    background: var(--gradient-royal) !important;
+    box-shadow: var(--shadow-3d-medium);
+    backdrop-filter: blur(10px);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #ffeaa7 !important;
+    transform: scale(1.1) rotateY(10deg);
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.navbar .nav-link:hover {
+    color: #ffeaa7 !important;
+    transform: translateY(-2px) scale(1.05);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Hero Section with 3D Cards */
+.display-4 {
+    background: var(--gradient-sunset);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    transform: perspective(1000px) rotateX(10deg);
+}
+
+/* 3D Button Styles */
+.btn-primary {
+    background: var(--gradient-blue) !important;
+    border: none !important;
+    box-shadow: var(--shadow-3d-light);
+    transform: perspective(1000px) rotateX(5deg);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    border-radius: 15px !important;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+    background: var(--gradient-royal) !important;
+    transform: perspective(1000px) rotateX(0deg) translateY(-8px) scale(1.05) !important;
+    box-shadow: var(--shadow-3d-heavy), var(--shadow-3d-glow) !important;
+}
+
+.btn-outline-primary {
+    background: transparent !important;
+    border: 2px solid #667eea !important;
+    color: #667eea !important;
+    box-shadow: var(--shadow-3d-light);
+    transform: perspective(1000px) rotateX(5deg);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    border-radius: 15px !important;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background: var(--gradient-blue) !important;
+    color: white !important;
+    border-color: transparent !important;
+    transform: perspective(1000px) rotateX(0deg) translateY(-8px) scale(1.05) !important;
+    box-shadow: var(--shadow-3d-heavy), var(--shadow-3d-glow) !important;
+}
+
+.btn-success {
+    background: var(--gradient-forest) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    transform: perspective(1000px) rotateX(5deg);
+}
+
+.btn-success:hover {
+    background: var(--gradient-green) !important;
+    transform: perspective(1000px) rotateX(0deg) translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4) !important;
+}
+
+.btn-info {
+    background: var(--gradient-cyan) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: #2d3436 !important;
+    transform: perspective(1000px) rotateX(5deg);
+}
+
+.btn-info:hover {
+    background: var(--gradient-ocean) !important;
+    color: white !important;
+    transform: perspective(1000px) rotateX(0deg) translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4) !important;
+}
+
+.btn-danger {
+    background: var(--gradient-navy) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    transform: perspective(1000px) rotateX(5deg);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #1e3c72 0%, #2c5aa0 100%) !important;
+    transform: perspective(1000px) rotateX(0deg) translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(44, 90, 160, 0.4) !important;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #636e72 0%, #2d3436 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    transform: perspective(1000px) rotateX(5deg);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%) !important;
+    transform: perspective(1000px) rotateX(0deg) translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4) !important;
+}
+
+/* 3D Card Sections */
+.card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow-3d-medium) !important;
+    transform: perspective(1000px) rotateX(5deg) !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-blue);
+    z-index: 1;
+}
+
+.card:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-12px) rotateY(5deg) !important;
+    box-shadow: var(--shadow-3d-heavy) !important;
+}
+
+/* Feature Cards with Different Colors */
+.col-md-4:nth-child(1) .card::before {
+    background: var(--gradient-blue);
+}
+
+.col-md-4:nth-child(2) .card::before {
+    background: var(--gradient-forest);
+}
+
+.col-md-4:nth-child(3) .card::before {
+    background: var(--gradient-orange);
+}
+
+.col-md-4:nth-child(1) .card:hover {
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3) !important;
+}
+
+.col-md-4:nth-child(2) .card:hover {
+    box-shadow: 0 15px 35px rgba(0, 184, 148, 0.3) !important;
+}
+
+.col-md-4:nth-child(3) .card:hover {
+    box-shadow: 0 15px 35px rgba(250, 112, 154, 0.3) !important;
+}
+
+/* Dashboard Stats Cards with Individual Colors */
+.dashboard-card-1 {
+    background: var(--gradient-blue) !important;
+    color: white !important;
+}
+
+.dashboard-card-2 {
+    background: var(--gradient-forest) !important;
+    color: white !important;
+}
+
+.dashboard-card-3 {
+    background: var(--gradient-orange) !important;
+    color: white !important;
+}
+
+.dashboard-card-4 {
+    background: var(--gradient-navy) !important;
+    color: white !important;
+}
+
+/* Resume Cards with Gradient Backgrounds */
+.resume-card {
+    background: var(--gradient-sunset) !important;
+    color: #2d3436 !important;
+}
+
+.resume-card:nth-child(even) {
+    background: var(--gradient-cyan) !important;
+}
+
+.resume-card:nth-child(3n) {
+    background: var(--gradient-pink) !important;
+}
+
+/* Job Cards with Rotating Colors */
+.job-card:nth-child(4n+1) {
+    background: var(--gradient-blue) !important;
+    color: white !important;
+}
+
+.job-card:nth-child(4n+2) {
+    background: var(--gradient-forest) !important;
+    color: white !important;
+}
+
+.job-card:nth-child(4n+3) {
+    background: var(--gradient-orange) !important;
+    color: #2d3436 !important;
+}
+
+.job-card:nth-child(4n+4) {
+    background: var(--gradient-navy) !important;
+    color: white !important;
+}
+
+/* Enhanced Skill Badges with 3D Effect */
+.skill-badge {
+    background: var(--gradient-blue) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 16px !important;
+    font-weight: 600 !important;
+    box-shadow: var(--shadow-3d-light) !important;
+    transform: perspective(1000px) rotateX(10deg) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    margin: 4px !important;
+    display: inline-block !important;
+}
+
+.skill-badge:nth-child(even) {
+    background: var(--gradient-forest) !important;
+}
+
+.skill-badge:nth-child(3n) {
+    background: var(--gradient-orange) !important;
+    color: #2d3436 !important;
+}
+
+.skill-badge:nth-child(4n) {
+    background: var(--gradient-navy) !important;
+}
+
+.skill-badge:nth-child(5n) {
+    background: var(--gradient-cyan) !important;
+    color: #2d3436 !important;
+}
+
+.skill-badge:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-4px) scale(1.1) !important;
+    box-shadow: var(--shadow-3d-medium) !important;
+}
+
+/* Hero Section with 3D Text Effect */
+.hero-section {
+    background: var(--gradient-sunset);
+    border-radius: 30px;
+    padding: 60px 40px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-3d-heavy);
+    transform: perspective(1000px) rotateX(5deg);
+    transition: all 0.4s ease;
+}
+
+.hero-section:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-10px);
+}
+
+/* Section Headers with 3D Text */
+.section-title {
+    background: var(--gradient-royal);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700 !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    transform: perspective(1000px) rotateY(5deg);
+    transition: all 0.3s ease;
+}
+
+.section-title:hover {
+    transform: perspective(1000px) rotateY(0deg) scale(1.05);
+}
+
+/* Main Container with Glass Effect */
+main.container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: var(--shadow-3d-medium);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Feature Icons with 3D Transform */
+.fa-3x {
+    transform: perspective(1000px) rotateY(15deg) rotateX(10deg);
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.card:hover .fa-3x {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.2);
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+}
+
+/* Dashboard Stats with Different Gradients */
+.col-md-3:nth-child(1) .card {
+    background: var(--gradient-blue) !important;
+    color: white !important;
+}
+
+.col-md-3:nth-child(2) .card {
+    background: var(--gradient-forest) !important;
+    color: white !important;
+}
+
+.col-md-3:nth-child(3) .card {
+    background: var(--gradient-orange) !important;
+    color: #2d3436 !important;
+}
+
+.col-md-3:nth-child(4) .card {
+    background: var(--gradient-navy) !important;
+    color: white !important;
+}
+
+/* Resume List Cards */
+.col-md-6:nth-child(odd) .card {
+    background: var(--gradient-sunset) !important;
+    color: #2d3436 !important;
+}
+
+.col-md-6:nth-child(even) .card {
+    background: var(--gradient-cyan) !important;
+    color: #2d3436 !important;
+}
+
+.col-lg-4:nth-child(3n+1) .card {
+    background: var(--gradient-blue) !important;
+    color: white !important;
+}
+
+.col-lg-4:nth-child(3n+2) .card {
+    background: var(--gradient-forest) !important;
+    color: white !important;
+}
+
+.col-lg-4:nth-child(3n+3) .card {
+    background: var(--gradient-orange) !important;
+    color: #2d3436 !important;
+}
+
+/* Modal with 3D Effect */
+.modal-content {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 25px !important;
+    box-shadow: var(--shadow-3d-heavy) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transform: perspective(1000px) rotateX(10deg) !important;
+    transition: all 0.4s ease !important;
+}
+
+.modal.show .modal-content {
+    transform: perspective(1000px) rotateX(0deg) !important;
+}
+
+.modal-header {
+    background: var(--gradient-royal) !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 25px 25px 0 0 !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.modal-footer {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-top: none !important;
+    border-radius: 0 0 25px 25px !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Form Controls with 3D Effect */
+.form-control {
+    border-radius: 15px !important;
+    border: 2px solid rgba(102, 126, 234, 0.3) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1) !important;
+    transform: perspective(1000px) rotateX(2deg) !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25), var(--shadow-3d-light) !important;
+    transform: perspective(1000px) rotateX(0deg) scale(1.02) !important;
+    background: rgba(255, 255, 255, 1) !important;
+}
+
+/* Footer with Gradient */
+footer {
+    background: var(--gradient-royal) !important;
+    color: white !important;
+    box-shadow: var(--shadow-3d-medium);
+    margin-top: 60px !important;
+}
+
+footer p {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Alert Containers with 3D Effect */
+.alert {
+    border-radius: 15px !important;
+    border: none !important;
+    box-shadow: var(--shadow-3d-light) !important;
+    transform: perspective(1000px) rotateX(5deg) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.alert-success {
+    background: var(--gradient-forest) !important;
+    color: white !important;
+}
+
+.alert-danger {
+    background: var(--gradient-navy) !important;
+    color: white !important;
+}
+
+.alert-info {
+    background: var(--gradient-ocean) !important;
+    color: white !important;
+}
+
+.alert-warning {
+    background: var(--gradient-orange) !important;
+    color: #2d3436 !important;
+}
+
+/* Enhanced Icon Effects */
+.fas, .far, .fab {
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+    transition: all 0.3s ease;
+}
+
+/* Stats Section with Prismatic Effect */
+.bg-primary {
+    background: var(--gradient-royal) !important;
+    border-radius: 25px !important;
+    box-shadow: var(--shadow-3d-heavy) !important;
+    transform: perspective(1000px) rotateX(5deg) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.bg-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    animation: shimmer 3s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.bg-primary:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-15px) !important;
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Card Headers with Gradients */
+.card-header {
+    background: var(--gradient-royal) !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 20px 20px 0 0 !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    font-weight: 600;
+}
+
+/* Input Groups with 3D Effect */
+.input-group {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-3d-light);
+}
+
+/* Navbar Toggler with 3D Effect */
+.navbar-toggler {
+    border: none !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 10px !important;
+    box-shadow: var(--shadow-3d-light) !important;
+}
+
+.navbar-toggler:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Page Content Animation */
+@keyframes pageEnter {
+    0% {
+        opacity: 0;
+        transform: perspective(1000px) rotateX(20deg) translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(1000px) rotateX(0deg) translateY(0);
+    }
+}
+
+main.container {
+    animation: pageEnter 0.8s ease-out;
+}
+
+/* Loading Spinner with Rainbow Effect */
+.fa-spinner {
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.5));
+}
+
+/* Enhanced Glassmorphism for Cards */
+.glassmorphism {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow-3d-medium) !important;
+}
+
+/* Responsive 3D Effects - Reduce on smaller screens */
+@media (max-width: 768px) {
+    .card {
+        transform: perspective(1000px) rotateX(2deg) !important;
+    }
+    
+    .card:hover {
+        transform: perspective(1000px) rotateX(0deg) translateY(-8px) !important;
+    }
+    
+    main.container {
+        padding: 20px;
+        border-radius: 20px;
+    }
+    
+    .btn {
+        transform: perspective(1000px) rotateX(2deg) !important;
+    }
+    
+    .btn:hover {
+        transform: perspective(1000px) rotateX(0deg) translateY(-4px) scale(1.02) !important;
+    }
+}

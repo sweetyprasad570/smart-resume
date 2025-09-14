@@ -1,0 +1,13 @@
+This is a placeholder file. Please replace this with your actual background.mp4 video file.
+
+To add your video:
+1. Copy your background.mp4 file to this directory: d:\smart resume-20250830T225608Z-1-001\smart resume\static\videos\
+2. Replace this placeholder file with your actual video file
+3. The video will automatically play as a fullscreen background on the homepage
+
+Video specifications:
+- Format: MP4 (H.264 codec recommended)
+- Resolution: 1920x1080 or higher
+- Duration: 10-30 seconds (will loop)
+- File size: Keep under 5MB for optimal performance
+- Content: Lightning effects, gradient animations, or abstract motion graphics

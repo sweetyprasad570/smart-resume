@@ -1,0 +1,867 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Smart Resume{% endblock %}
+
+{% block head %}
+<style>
+  /* Profile Page Animations and Styles */
+  .profile-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #581c87 100%);
+    border-radius: 20px;
+    padding: 40px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    animation: slideInDown 0.8s ease-out;
+    box-shadow: 0 20px 60px rgba(30, 58, 138, 0.3);
+  }
+  
+  .profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+  }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    animation: bounceIn 1s ease-out;
+  }
+  
+  .profile-info {
+    position: relative;
+    z-index: 2;
+    animation: fadeInRight 1s ease-out;
+  }
+  
+  .profile-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: slideInUp 0.6s ease-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  }
+  
+  .profile-card:nth-child(1) { animation-delay: 0.1s; }
+  .profile-card:nth-child(2) { animation-delay: 0.2s; }
+  .profile-card:nth-child(3) { animation-delay: 0.3s; }
+  .profile-card:nth-child(4) { animation-delay: 0.4s; }
+  
+  .profile-stat {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .profile-stat:hover {
+    transform: scale(1.05);
+  }
+  
+  .profile-stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 24px;
+    color: white;
+  }
+  
+  .profile-stat-icon.resumes { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+  .profile-stat-icon.jobs { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
+  .profile-stat-icon.skills { background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%); }
+  .profile-stat-icon.score { background: linear-gradient(135deg, #7c2d12 0%, #ea580c 100%); }
+  
+  .skill-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-block;
+    margin: 5px;
+    animation: bounceIn 0.6s ease-out;
+    animation-fill-mode: both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .skill-tag:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+  
+  .skill-tag:nth-child(1) { animation-delay: 0.1s; }
+  .skill-tag:nth-child(2) { animation-delay: 0.2s; }
+  .skill-tag:nth-child(3) { animation-delay: 0.3s; }
+  .skill-tag:nth-child(4) { animation-delay: 0.4s; }
+  .skill-tag:nth-child(5) { animation-delay: 0.5s; }
+  
+  .edit-profile-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+  
+  .edit-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+  }
+  
+  .profile-section-title {
+    color: #374151;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    animation: fadeInLeft 0.8s ease-out;
+  }
+  
+  .profile-section-title i {
+    margin-right: 10px;
+    color: #667eea;
+  }
+  
+  /* Animations */
+  @keyframes slideInDown {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideInUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      transform: translateX(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInLeft {
+    from {
+      transform: translateX(-30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loading-spinner {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+  }
+  
+  .error-message {
+    text-align: center;
+    padding: 40px;
+    color: #dc2626;
+    background: #fef2f2;
+    border-radius: 10px;
+    margin: 20px 0;
+  }
+  
+  /* Unique Profile Section Styles */
+  .achievement-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    animation: fadeInLeft 0.6s ease-out;
+  }
+  
+  .achievement-item:last-child {
+    border-bottom: none;
+  }
+  
+  .achievement-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 18px;
+  }
+  
+  .achievement-text strong {
+    display: block;
+    color: #374151;
+    font-size: 14px;
+  }
+  
+  .achievement-text small {
+    color: #6b7280;
+    font-size: 12px;
+  }
+  
+  .network-stats {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .network-stat-item {
+    flex: 1;
+    padding: 15px 10px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 10px;
+    margin: 0 5px;
+    animation: bounceIn 0.8s ease-out;
+  }
+  
+  .network-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+  }
+  
+  .network-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .analytics-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    animation: fadeInRight 0.6s ease-out;
+  }
+  
+  .analytics-item:last-child {
+    border-bottom: none;
+  }
+  
+  .analytics-label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+  }
+  
+  .analytics-value {
+    font-weight: 700;
+    color: #1e3a8a;
+    font-size: 16px;
+  }
+  
+  .analytics-change {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+  
+  .analytics-change.text-success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  
+  .analytics-change.text-danger {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  
+  /* Animation delays for staggered effects */
+  .achievement-item:nth-child(1) { animation-delay: 0.1s; }
+  .achievement-item:nth-child(2) { animation-delay: 0.2s; }
+  .achievement-item:nth-child(3) { animation-delay: 0.3s; }
+  
+  .network-stat-item:nth-child(1) { animation-delay: 0.1s; }
+  .network-stat-item:nth-child(2) { animation-delay: 0.2s; }
+  .network-stat-item:nth-child(3) { animation-delay: 0.3s; }
+  
+  .analytics-item:nth-child(1) { animation-delay: 0.1s; }
+  .analytics-item:nth-child(2) { animation-delay: 0.2s; }
+  .analytics-item:nth-child(3) { animation-delay: 0.3s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <!-- Profile Header -->
+    <div class="profile-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+          <div class="profile-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="profile-info">
+            <h2 class="mb-2" id="profile-name">Loading...</h2>
+            <p class="mb-1" id="profile-email">user@example.com</p>
+            <p class="mb-0 opacity-75" id="profile-role">Professional</p>
+          </div>
+        </div>
+        <div class="col-md-3 text-center">
+          <button class="edit-profile-btn" onclick="editProfile()">
+            <i class="fas fa-edit me-2"></i>Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Profile Stats -->
+  <div class="col-md-3 mb-4">
+    <div class="profile-stat">
+      <div class="profile-stat-icon resumes">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <h4 class="mb-1" id="profile-resumes-count">0</h4>
+      <p class="mb-0 text-muted">Resumes</p>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-4">
+    <div class="profile-stat">
+      <div class="profile-stat-icon jobs">
+        <i class="fas fa-briefcase"></i>
+      </div>
+      <h4 class="mb-1" id="profile-jobs-count">0</h4>
+      <p class="mb-0 text-muted">Applied Jobs</p>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-4">
+    <div class="profile-stat">
+      <div class="profile-stat-icon skills">
+        <i class="fas fa-code"></i>
+      </div>
+      <h4 class="mb-1" id="profile-skills-count">0</h4>
+      <p class="mb-0 text-muted">Skills</p>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-4">
+    <div class="profile-stat">
+      <div class="profile-stat-icon score">
+        <i class="fas fa-star"></i>
+      </div>
+      <h4 class="mb-1" id="profile-score">85%</h4>
+      <p class="mb-0 text-muted">Profile Score</p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Personal Information -->
+  <div class="col-md-6 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-user-circle"></i>Personal Information
+      </h5>
+      <div id="personal-info-content">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+          <p class="mt-3">Loading profile information...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Professional Skills -->
+  <div class="col-md-6 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-tools"></i>Professional Skills
+      </h5>
+      <div id="skills-content">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+          <p class="mt-3">Loading skills...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Career Summary -->
+  <div class="col-md-6 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-chart-line"></i>Career Summary
+      </h5>
+      <div id="career-content">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+          <p class="mt-3">Loading career information...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Activity -->
+  <div class="col-md-6 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-clock"></i>Recent Activity
+      </h5>
+      <div id="activity-content">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+          <p class="mt-3">Loading recent activity...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Unique Profile Sections -->
+<div class="row mt-4">
+  <!-- Professional Achievements -->
+  <div class="col-md-4 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-trophy"></i>Achievements
+      </h5>
+      <div id="achievements-content">
+        <div class="achievement-item">
+          <div class="achievement-icon">
+            <i class="fas fa-medal text-warning"></i>
+          </div>
+          <div class="achievement-text">
+            <strong>Profile Complete</strong>
+            <small class="text-muted d-block">100% profile completion</small>
+          </div>
+        </div>
+        <div class="achievement-item">
+          <div class="achievement-icon">
+            <i class="fas fa-fire text-danger"></i>
+          </div>
+          <div class="achievement-text">
+            <strong>30 Day Streak</strong>
+            <small class="text-muted d-block">Active for 30 days</small>
+          </div>
+        </div>
+        <div class="achievement-item">
+          <div class="achievement-icon">
+            <i class="fas fa-star text-primary"></i>
+          </div>
+          <div class="achievement-text">
+            <strong>Top Performer</strong>
+            <small class="text-muted d-block">Top 10% profile score</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Network & Connections -->
+  <div class="col-md-4 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-users"></i>Network
+      </h5>
+      <div id="network-content">
+        <div class="network-stats">
+          <div class="network-stat-item">
+            <div class="network-number">156</div>
+            <div class="network-label">Connections</div>
+          </div>
+          <div class="network-stat-item">
+            <div class="network-number">42</div>
+            <div class="network-label">Followers</div>
+          </div>
+          <div class="network-stat-item">
+            <div class="network-number">89</div>
+            <div class="network-label">Following</div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-outline-primary btn-sm w-100">
+            <i class="fas fa-user-plus me-2"></i>Expand Network
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Profile Analytics -->
+  <div class="col-md-4 mb-4">
+    <div class="profile-card">
+      <h5 class="profile-section-title">
+        <i class="fas fa-chart-bar"></i>Analytics
+      </h5>
+      <div id="analytics-content">
+        <div class="analytics-item">
+          <div class="analytics-label">Profile Views</div>
+          <div class="analytics-value">1,234</div>
+          <div class="analytics-change text-success">+12%</div>
+        </div>
+        <div class="analytics-item">
+          <div class="analytics-label">Resume Downloads</div>
+          <div class="analytics-value">89</div>
+          <div class="analytics-change text-success">+5%</div>
+        </div>
+        <div class="analytics-item">
+          <div class="analytics-label">Job Matches</div>
+          <div class="analytics-value">45</div>
+          <div class="analytics-change text-danger">-2%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" class="modal-overlay hidden">
+  <div id="editModalOverlay" class="overlay"></div>
+  <div id="editModalPanel" class="modal-panel">
+    <div class="modal-header">
+      <h4><i class="fas fa-edit me-2"></i>Edit Profile</h4>
+      <button id="editModalCloseX" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="editProfileForm">
+        <div class="mb-3">
+          <label for="editName" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="editName" required>
+        </div>
+        <div class="mb-3">
+          <label for="editEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="editEmail" required>
+        </div>
+        <div class="mb-3">
+          <label for="editRole" class="form-label">Professional Role</label>
+          <input type="text" class="form-control" id="editRole" placeholder="e.g., Software Developer">
+        </div>
+        <div class="mb-3">
+          <label for="editSkills" class="form-label">Skills (comma-separated)</label>
+          <textarea class="form-control" id="editSkills" rows="3" placeholder="JavaScript, Python, React, Node.js"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="editBio" class="form-label">Bio</label>
+          <textarea class="form-control" id="editBio" rows="4" placeholder="Tell us about yourself..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button id="editModalCloseBtn" class="btn btn-secondary me-2">Cancel</button>
+      <button id="saveProfileBtn" class="btn btn-primary">Save Changes</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Profile data and functionality
+  let profileData = {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    role: 'Software Developer',
+    skills: ['JavaScript', 'Python', 'React', 'Node.js', 'MongoDB'],
+    resumes: 3,
+    appliedJobs: 12,
+    profileScore: 85,
+    bio: 'Passionate software developer with 5+ years of experience in full-stack development.',
+    location: 'San Francisco, CA',
+    phone: '+1 (555) 123-4567',
+    website: 'https://johndoe.dev',
+    experience: '5+ years',
+    education: 'Bachelor of Computer Science',
+    recentActivity: [
+      { action: 'Updated resume', time: '2 hours ago' },
+      { action: 'Applied to 3 jobs', time: '1 day ago' },
+      { action: 'Added new skills', time: '3 days ago' }
+    ]
+  };
+
+  // Load profile data
+  function loadProfile() {
+    try {
+      // Simulate API call - in real app, this would fetch from backend
+      setTimeout(() => {
+        updateProfileDisplay();
+        loadProfileSections();
+      }, 1000);
+    } catch (error) {
+      console.error('Error loading profile:', error);
+      showError('Failed to load profile data');
+    }
+  }
+
+  // Update profile display
+  function updateProfileDisplay() {
+    document.getElementById('profile-name').textContent = profileData.name;
+    document.getElementById('profile-email').textContent = profileData.email;
+    document.getElementById('profile-role').textContent = profileData.role;
+    document.getElementById('profile-resumes-count').textContent = profileData.resumes;
+    document.getElementById('profile-jobs-count').textContent = profileData.appliedJobs;
+    document.getElementById('profile-skills-count').textContent = profileData.skills.length;
+    document.getElementById('profile-score').textContent = profileData.profileScore + '%';
+  }
+
+  // Load profile sections
+  function loadProfileSections() {
+    // Personal Information
+    document.getElementById('personal-info-content').innerHTML = `
+      <div class="row">
+        <div class="col-6 mb-3">
+          <strong>Full Name:</strong><br>
+          <span class="text-muted">${profileData.name}</span>
+        </div>
+        <div class="col-6 mb-3">
+          <strong>Email:</strong><br>
+          <span class="text-muted">${profileData.email}</span>
+        </div>
+        <div class="col-6 mb-3">
+          <strong>Role:</strong><br>
+          <span class="text-muted">${profileData.role}</span>
+        </div>
+        <div class="col-6 mb-3">
+          <strong>Location:</strong><br>
+          <span class="text-muted">${profileData.location}</span>
+        </div>
+        <div class="col-6 mb-3">
+          <strong>Phone:</strong><br>
+          <span class="text-muted">${profileData.phone}</span>
+        </div>
+        <div class="col-6 mb-3">
+          <strong>Website:</strong><br>
+          <a href="${profileData.website}" target="_blank" class="text-primary">${profileData.website}</a>
+        </div>
+      </div>
+    `;
+
+    // Skills
+    document.getElementById('skills-content').innerHTML = `
+      <div class="skills-container">
+        ${profileData.skills.map(skill => `
+          <span class="skill-tag">${skill}</span>
+        `).join('')}
+      </div>
+      <div class="mt-3">
+        <strong>Experience:</strong> ${profileData.experience}<br>
+        <strong>Education:</strong> ${profileData.education}
+      </div>
+    `;
+
+    // Career Summary
+    document.getElementById('career-content').innerHTML = `
+      <p class="text-muted">${profileData.bio}</p>
+      <div class="mt-3">
+        <div class="progress mb-2">
+          <div class="progress-bar bg-success" style="width: ${profileData.profileScore}%">${profileData.profileScore}% Complete</div>
+        </div>
+        <small class="text-muted">Profile Completion Score</small>
+      </div>
+    `;
+
+    // Recent Activity
+    document.getElementById('activity-content').innerHTML = `
+      <div class="activity-list">
+        ${profileData.recentActivity.map(activity => `
+          <div class="activity-item d-flex align-items-center mb-2">
+            <i class="fas fa-circle text-primary me-2" style="font-size: 8px;"></i>
+            <div>
+              <strong>${activity.action}</strong>
+              <br>
+              <small class="text-muted">${activity.time}</small>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // Edit profile functions
+  function editProfile() {
+    showEditModal();
+    
+    // Populate form with current data
+    document.getElementById('editName').value = profileData.name;
+    document.getElementById('editEmail').value = profileData.email;
+    document.getElementById('editRole').value = profileData.role;
+    document.getElementById('editSkills').value = profileData.skills.join(', ');
+    document.getElementById('editBio').value = profileData.bio;
+  }
+
+  function showEditModal() {
+    const modal = document.getElementById('editProfileModal');
+    const overlay = document.getElementById('editModalOverlay');
+    const panel = document.getElementById('editModalPanel');
+    
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    setTimeout(() => {
+      overlay.style.opacity = '1';
+      panel.style.transform = 'scale(1)';
+      panel.style.opacity = '1';
+    }, 10);
+  }
+
+  function closeEditModal() {
+    const modal = document.getElementById('editProfileModal');
+    const overlay = document.getElementById('editModalOverlay');
+    const panel = document.getElementById('editModalPanel');
+    
+    overlay.style.opacity = '0';
+    panel.style.transform = 'scale(0.95)';
+    panel.style.opacity = '0';
+    
+    setTimeout(() => {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }, 300);
+  }
+
+  function saveProfile() {
+    // Get form data
+    profileData.name = document.getElementById('editName').value;
+    profileData.email = document.getElementById('editEmail').value;
+    profileData.role = document.getElementById('editRole').value;
+    profileData.skills = document.getElementById('editSkills').value.split(',').map(s => s.trim());
+    profileData.bio = document.getElementById('editBio').value;
+    
+    // Update display
+    updateProfileDisplay();
+    loadProfileSections();
+    
+    // Close modal
+    closeEditModal();
+    
+    // Show success message
+    showSuccess('Profile updated successfully!');
+  }
+
+  function showSuccess(message) {
+    // Create success notification
+    const notification = document.createElement('div');
+    notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+      <i class="fas fa-check-circle me-2"></i>${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  }
+
+  function showError(message) {
+    document.getElementById('personal-info-content').innerHTML = `
+      <div class="error-message">
+        <i class="fas fa-exclamation-triangle me-2"></i>${message}
+      </div>
+    `;
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    loadProfile();
+    
+    // Add event listeners for edit modal
+    const editCloseBtn = document.getElementById('editModalCloseBtn');
+    const editCloseX = document.getElementById('editModalCloseX');
+    const editOverlay = document.getElementById('editModalOverlay');
+    const saveBtn = document.getElementById('saveProfileBtn');
+    
+    if (editCloseBtn) editCloseBtn.addEventListener('click', closeEditModal);
+    if (editCloseX) editCloseX.addEventListener('click', closeEditModal);
+    if (editOverlay) editOverlay.addEventListener('click', closeEditModal);
+    if (saveBtn) saveBtn.addEventListener('click', saveProfile);
+    
+    // ESC key to close modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeEditModal();
+    });
+  });
+</script>
+{% endblock %}

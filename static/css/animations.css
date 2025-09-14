@@ -1,0 +1,286 @@
+/* Advanced Animations and Interactive Effects for Smart Resume */
+
+/* Keyframe animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Button ripple effect */
+.btn {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+    z-index: -1;
+}
+
+.btn:active::after {
+    width: 200px;
+    height: 200px;
+}
+
+/* Advanced card hover effects */
+.card-body {
+    transition: all 0.3s ease;
+}
+
+.card:hover .card-body {
+    transform: translateY(-2px);
+}
+
+/* Floating action button style for "Create New Resume" */
+.btn[data-bs-target="#createResumeModal"] {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 25px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease;
+}
+
+.btn[data-bs-target="#createResumeModal"]:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.btn[data-bs-target="#createResumeModal"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn[data-bs-target="#createResumeModal"]:hover::before {
+    left: 100%;
+}
+
+/* Icon rotation effects */
+.fas, .far, .fab {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover .fas,
+.btn:hover .far,
+.btn:hover .fab {
+    transform: rotate(5deg) scale(1.1);
+}
+
+.btn:hover .fa-plus {
+    transform: rotate(90deg) scale(1.1);
+}
+
+.btn:hover .fa-eye {
+    transform: scale(1.2);
+}
+
+.btn:hover .fa-edit {
+    transform: rotate(-5deg) scale(1.1);
+}
+
+.btn:hover .fa-download {
+    transform: translateY(2px) scale(1.1);
+}
+
+.btn:hover .fa-trash {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Navbar brand hover effect */
+.navbar-brand {
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #007bff !important;
+    transform: scale(1.05);
+}
+
+.navbar-brand:hover .fas {
+    animation: bounce 1s infinite;
+}
+
+/* Skill badge interactive effect with color change */
+.skill-badge {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.skill-badge:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white !important;
+}
+
+/* Stats cards animation on dashboard */
+.col-md-3 .card {
+    transition: all 0.3s ease;
+}
+
+.col-md-3 .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.col-md-3 .card:hover .fa-2x {
+    animation: pulse 1s infinite;
+}
+
+/* Form input focus enhancements */
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25), 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+/* Modal entrance animation */
+.modal.fade .modal-dialog {
+    transform: scale(0.8) translateY(-100px);
+    transition: all 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+/* Resume/Job card footer buttons group hover */
+.card-footer .btn-group .btn {
+    transition: all 0.3s ease;
+}
+
+.card-footer .btn-group:hover .btn {
+    transform: translateY(-3px);
+}
+
+.card-footer .btn-group .btn:hover {
+    transform: translateY(-6px);
+    z-index: 2;
+}
+
+/* Loading spinner enhancement */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Footer hover effect */
+footer {
+    transition: all 0.3s ease;
+}
+
+footer:hover {
+    background-color: #e9ecef !important;
+}
+
+/* Brand logo enhanced hover */
+.navbar-brand .fas {
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .fas {
+    color: #28a745 !important;
+    transform: rotate(360deg) scale(1.2);
+}
+
+/* Quick action buttons on dashboard */
+.card .btn.w-100 {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border-radius: 10px;
+}
+
+.card .btn.w-100:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 123, 255, 0.15);
+}
+
+/* Close button hover effect */
+.btn-close {
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    transform: scale(1.1) rotate(90deg);
+}
+
+/* Alert animation */
+.alert {
+    animation: slideInFromRight 0.5s ease;
+}
+
+/* Responsive hover effects - disable on touch devices */
+@media (hover: none) {
+    .btn:hover,
+    .card:hover,
+    .skill-badge:hover,
+    .nav-link:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
